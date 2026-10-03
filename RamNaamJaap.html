@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>राम नाम जाप · Ram Naam Jaap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f1ec;--ink:#14213d;--muted:#5b6578;--bead:#c9ccd6;--saffron:#d9680b;--btn:#fff;--line:#d9d6cd;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0c1530;--ink:#eef0f7;--muted:#98a2bd;--bead:#27345c;--saffron:#ffa63d;--btn:#14214a;--line:#26335a}
+}
+:root[data-theme="dark"]{--bg:#0c1530;--ink:#eef0f7;--muted:#98a2bd;--bead:#27345c;--saffron:#ffa63d;--btn:#14214a;--line:#26335a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Mukta",system-ui,sans-serif;font-size:17px;line-height:1.5;min-height:100vh}
+main{max-width:30rem;margin:0 auto;padding:1.5rem 1.25rem 3rem;text-align:center}
+h1{font-family:"Tiro Devanagari Hindi",serif;font-weight:400;font-size:1.9rem;margin:.5rem 0 0}
+.sub{color:var(--muted);margin:.1rem 0 1rem}
+.mala{position:relative;width:min(100%,22rem);margin:0 auto}
+.mala svg{display:block;width:100%;height:auto}
+.bead{fill:var(--bead);transition:fill .15s}
+.bead.on{fill:var(--saffron)}
+.bead.sumeru{stroke:var(--saffron);stroke-width:2}
+#tap{position:absolute;inset:19%;border-radius:50%;border:2px solid var(--saffron);background:var(--btn);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+#tap:focus-visible{outline:3px solid var(--saffron);outline-offset:4px}
+#tap.pulse{animation:pulse .18s ease-out}
+@keyframes pulse{50%{transform:scale(.96)}}
+.ram{font-family:"Tiro Devanagari Hindi",serif;font-size:clamp(3rem,16vw,4.4rem);line-height:1.1;color:var(--saffron)}
+.count{font-size:1.15rem;font-weight:600}
+.hint{font-size:.85rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:1.5rem 0 1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.9rem 0}
+.stats b{display:block;font-size:1.5rem;font-weight:600}
+.stats span{font-size:.85rem;color:var(--muted)}
+.goal{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+.bar{height:6px;border-radius:3px;background:var(--bead);overflow:hidden;margin:.4rem 0 1.2rem}
+.bar i{display:block;height:100%;width:0;background:var(--saffron);transition:width .2s}
+select,.ctl{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:.5rem;padding:.4rem .8rem;cursor:pointer}
+select{background:var(--bg)}
+.ctl:focus-visible,select:focus-visible{outline:2px solid var(--saffron);outline-offset:2px}
+.row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.about{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line);text-align:left}
+.about h2{font-family:"Tiro Devanagari Hindi",serif;font-weight:400;font-size:1.5rem;margin:0 0 .2rem;text-align:center}
+.about .sub{text-align:center}
+.about p{margin:.8rem 0;max-width:34rem}
+.about blockquote{margin:1.2rem 0;padding-left:1rem;border-left:3px solid var(--saffron);font-family:"Tiro Devanagari Hindi",serif;font-size:1.15rem}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:.3rem 1rem;margin:1rem 0;font-size:.95rem}
+.facts dt{color:var(--muted)}.facts dd{margin:0}
+.note{margin-top:2rem;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){#tap.pulse{animation:none}.bead,.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>राम नाम जाप</h1>
+  <p class="sub">Ram Naam Jaap · 108 beads, one mala</p>
+
+  <div class="mala">
+    <svg viewBox="0 0 320 320" aria-hidden="true"><g id="beads"></g></svg>
+    <button id="tap" type="button" aria-label="Chant Ram once">
+      <span class="ram">राम</span>
+      <span class="count" id="pos">0 / 108</span>
+      <span class="hint">tap or press Space</span>
+    </button>
+  </div>
+
+  <div class="stats" role="group" aria-label="Your count">
+    <div><b id="today">0</b><span>naam today</span></div>
+    <div><b id="malas">0</b><span>malas today</span></div>
+    <div><b id="total">0</b><span>naam in total</span></div>
+  </div>
+
+  <div class="goal">
+    <label for="goal">Daily goal</label>
+    <select id="goal">
+      <option value="1">1 mala</option>
+      <option value="3">3 malas</option>
+      <option value="5">5 malas</option>
+      <option value="11">11 malas</option>
+      <option value="21">21 malas</option>
+    </select>
+  </div>
+  <div class="bar" role="progressbar" aria-label="Daily goal progress" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="fill"></i></div>
+
+  <div class="row">
+    <button class="ctl" id="undo" type="button">Undo last</button>
+    <button class="ctl" id="reset" type="button">Reset today</button>
+    <button class="ctl" id="theme" type="button">Switch theme</button>
+  </div>
+
+  <section class="about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">नीम करोली बाबा</h2>
+    <p class="sub">About Neem Karoli Baba</p>
+    <p>Neem Karoli Baba, known to devotees as Maharaj-ji, was a Hindu saint and a devoted follower of Hanuman. He was born Lakshmi Narayan Sharma in Akbarpur, Uttar Pradesh, around 1900. He lived simply, moved between places across northern India, and left his body in Vrindavan in 1973.</p>
+    <p>His message was plain: love everyone, serve everyone, and remember God. Devotees recall him repeating Ram's name constantly and urging others to do the same, which is why many practise Ram Naam jaap in his memory.</p>
+    <blockquote lang="en">Love everyone, serve everyone, remember God.</blockquote>
+    <dl class="facts">
+      <dt>Known as</dt><dd>Maharaj-ji</dd>
+      <dt>Devotion</dt><dd>Hanuman, Ram Naam, seva</dd>
+      <dt>Main ashram</dt><dd>Kainchi Dham, near Nainital, Uttarakhand</dd>
+      <dt>Samadhi</dt><dd>Vrindavan, 1973</dd>
+    </dl>
+    <p>Kainchi Dham draws visitors from around the world, with a large annual gathering on 15 June. His devotees include people from India and abroad, among them the spiritual teacher Ram Dass, whose book <i>Miracle of Love</i> introduced him to many in the West.</p>
+  </section>
+
+  <p class="note">Counts are saved on this device only.</p>
+</main>
+
+<script>
+(function(){
+  var KEY="ramnaam:v1", N=108;
+  var beads=document.getElementById("beads"), els=[];
+  var NS="http://www.w3.org/2000/svg";
+  for(var i=0;i<N;i++){
+    var a=(i/N)*2*Math.PI-Math.PI/2, c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",160+138*Math.cos(a));
+    c.setAttribute("cy",160+138*Math.sin(a));
+    c.setAttribute("r",i===0?7.5:5.2);
+    c.setAttribute("class","bead"+(i===0?" sumeru":""));
+    beads.appendChild(c); els.push(c);
+  }
+  function today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+  var s={total:0,date:today(),count:0,goal:1,theme:""};
+  try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==="object")for(var k in s)if(k in p)s[k]=p[k]}}catch(e){}
+  if(s.date!==today()){s.date=today();s.count=0}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+  function $(id){return document.getElementById(id)}
+  function render(){
+    var pos=s.count%N, full=Math.floor(s.count/N);
+    // show a full ring right after completing a mala
+    var lit=(s.count>0&&pos===0)?N:pos;
+    for(var i=0;i<N;i++)els[i].setAttribute("class","bead"+(i===0?" sumeru":"")+(i<lit?" on":""));
+    $("pos").textContent=(s.count>0&&pos===0?N:pos)+" / "+N;
+    $("today").textContent=s.count.toLocaleString();
+    $("malas").textContent=full;
+    $("total").textContent=s.total.toLocaleString();
+    var pct=Math.min(100,Math.round(s.count/(s.goal*N)*100));
+    $("fill").style.width=pct+"%";
+    $("bar").setAttribute("aria-valuenow",pct);
+    $("goal").value=String(s.goal);
+  }
+  var tap=$("tap");
+  tap.addEventListener("click",function(){
+    if(s.date!==today()){s.date=today();s.count=0}
+    s.count++;s.total++;save();render();
+    tap.classList.remove("pulse");void tap.offsetWidth;tap.classList.add("pulse");
+    try{if(navigator.vibrate)navigator.vibrate(s.count%N===0?[40,60,40]:8)}catch(e){}
+  });
+  $("undo").addEventListener("click",function(){
+    if(s.count>0){s.count--;s.total=Math.max(0,s.total-1);save();render()}
+  });
+  var armed=false,t;
+  $("reset").addEventListener("click",function(){
+    var b=$("reset");
+    if(!armed){armed=true;b.textContent="Tap again to reset";t=setTimeout(function(){armed=false;b.textContent="Reset today"},3000);return}
+    clearTimeout(t);armed=false;b.textContent="Reset today";
+    s.total=Math.max(0,s.total-s.count);s.count=0;save();render();
+  });
+  $("goal").addEventListener("change",function(e){s.goal=parseInt(e.target.value,10)||1;save();render()});
+  function applyTheme(){if(s.theme)document.documentElement.setAttribute("data-theme",s.theme);else document.documentElement.removeAttribute("data-theme")}
+  $("theme").addEventListener("click",function(){
+    var dark=s.theme?s.theme==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
+    s.theme=dark?"light":"dark";applyTheme();save();
+  });
+  applyTheme();render();
+})();
+</script>
+</body>
+</html>
